@@ -1,0 +1,128 @@
+{
+  "EDITOR_STATE": {
+    "allProjectFiles": {
+      "f6f9b037-7e71-4173-97e0-1fa78cfd86d6": {
+        "id": "f6f9b037-7e71-4173-97e0-1fa78cfd86d6",
+        "parent": null,
+        "name": "email-lambda",
+        "type": "DIRECTORY",
+        "isDirectory": true,
+        "children": [
+          "b2634c88-ffea-4106-86a1-56bf987765f1"
+        ],
+        "isRemovable": false,
+        "filePath": "email-lambda"
+      },
+      "b2634c88-ffea-4106-86a1-56bf987765f1": {
+        "id": "b2634c88-ffea-4106-86a1-56bf987765f1",
+        "parent": "f6f9b037-7e71-4173-97e0-1fa78cfd86d6",
+        "name": "lambda.js",
+        "type": "JS_LAMBDA",
+        "isDirectory": false,
+        "children": [],
+        "isRemovable": true,
+        "filePath": "email-lambda/lambda.js",
+        "code": "let AWS = require('aws-sdk');\nconst sns = new AWS.SNS();\nexports.handler = function (event, context, callback) {\n\n\tlet receiver = event['receiver'];\n\tlet sender = event['sender'];\n\tlet message = event['message'];\n\n\tlet isPromotional = true;\n\n\tconsole.log(\"Sending message\", message, \"to receiver\", receiver);\n\n\tsns.publish({\n\t\tMessage: message,\n\t\tMessageAttributes: {\n\t\t\t'AWS.SNS.SMS.SMSType': {\n\t\t\t\tDataType: 'String',\n\t\t\t\tStringValue: 'Promotional'\n\t\t\t},\n\t\t\t'AWS.SNS.SMS.SenderID': {\n\t\t\t\tDataType: 'String',\n\t\t\t\tStringValue: sender\n\t\t\t},\n\t\t},\n\t\tPhoneNumber: receiver\n\t}).promise()\n\t\t.then(data => {\n\t\t\tconsole.log(\"Sent message to\", receiver);\n\t\t\tcallback(null, data);\n\t\t})\n\t\t.catch(err => {\n\t\t\tconsole.log(\"Sending failed\", err);\n\t\t\tcallback(err);\n\t\t});\n}",
+        "config": {
+          "runtime": "nodejs8.10",
+          "handler": "handler",
+          "timeout": 60,
+          "memory": 128,
+          "layers": []
+        },
+        "triggers": [
+          {
+            "resourceName": "apigapSoutheast1EmailGatewaysendEmailpost",
+            "config": {}
+          }
+        ],
+        "testCases": {
+          "ed1a5a79-ea21-44c9-b166-8df04e547a73": {
+            "id": "ed1a5a79-ea21-44c9-b166-8df04e547a73",
+            "name": "email-event",
+            "functionId": "b2634c88-ffea-4106-86a1-56bf987765f1",
+            "event": "{\n    \"email-id\": \"basav@neo91.com\",\n    \"message\": \"Hell World\"\n}"
+          }
+        }
+      }
+    },
+    "deletedFiles": [],
+    "rootNode": "f6f9b037-7e71-4173-97e0-1fa78cfd86d6",
+    "openFiles": [
+      "b2634c88-ffea-4106-86a1-56bf987765f1"
+    ],
+    "currentFileId": "b2634c88-ffea-4106-86a1-56bf987765f1",
+    "resources": {
+      "apigapSoutheast1EmailGatewaysendEmailpost": {
+        "name": "apigapSoutheast1EmailGatewaysendEmailpost",
+        "type": "API_GATEWAY",
+        "config": {
+          "selectedRegion": "ap-southeast-1",
+          "apiMode": 0,
+          "apiName": "EmailGateway",
+          "endpointType": "EDGE",
+          "resourceMode": 0,
+          "resourceName": "sendEmail",
+          "resourcePath": "/sendEmail",
+          "restMethod": "POST",
+          "proxyIntegration": false,
+          "enableCORS": false,
+          "stageMode": 0,
+          "stageName": "prod",
+          "mode": 0
+        }
+      },
+      "snsDirectSMSResource": {
+        "name": "snsDirectSMSResource",
+        "type": "SNS",
+        "config": {
+          "snsType": 1,
+          "numbers": [
+            "@{receiver}"
+          ]
+        }
+      }
+    },
+    "customTemplate": {
+      "dialect": null,
+      "definitions": {}
+    },
+    "envVariables": [
+      {
+        "lambdaId": "all",
+        "varKey": "SIGMA_AWS_ACC_ID",
+        "varValue": null,
+        "shouldPersist": false,
+        "displayOnly": false,
+        "editable": false
+      }
+    ],
+    "packageJSON": {
+      "dependencies": {
+        "aws-sdk": {
+          "name": "aws-sdk",
+          "language": "javascript",
+          "version": "2.176.0",
+          "dev": true,
+          "notRemovable": false
+        }
+      }
+    }
+  },
+  "PROJECT_META": {
+    "projectName": "email-lambda",
+    "projectDescription": "sending email",
+    "projectVersion": "1.0.0",
+    "projectRegion": "ap-southeast-1",
+    "platform": "AWS",
+    "platformRegions": {},
+    "lastSave": 1563194332025
+  },
+  "VCS_STATE": {
+    "provider": "GitHub",
+    "repo": {
+      "name": "email-lambda",
+      "url": "https://github.com/basav/email-lambda"
+    }
+  }
+}
